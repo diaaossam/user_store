@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:user_store/screens/sign_in/cubit/sign_in_cubit.dart';
 import 'package:user_store/shared/components/custom_button.dart';
+import 'package:user_store/shared/services/local/cache_helper.dart';
 import 'package:user_store/shared/styles/styles.dart';
 import 'package:user_store/shared/widgets/custom_widgets.dart';
 import '../../../shared/components/custom_surfix_icon.dart';
@@ -29,75 +30,73 @@ class SignForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => SignInCubit(),
-      child: BlocConsumer<SignInCubit, SignInState>(
-        listener: (context, state) {
-          if(state is SignInLoadingState){
-            showCustomProgressIndicator(context);
-          }
-          else if(state is SignInFailuerState){
-            Navigator.pop(context);
-            String errorMsg = state.error;
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(errorMsg),
-              backgroundColor: Colors.black,
-              duration: Duration(seconds: 5),
-            ));
-          }
-          else if(state is SignInSuccessState){
-            Navigator.pop(context);
-            navigateToAndFinish(context,CompleteProfileScreen());
-          }
-        },
-        builder: (context, state) {
-          SignInCubit cubit = SignInCubit.get(context);
-          return Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                buildEmailFormField(cubit),
-                SizedBox(height: getProportionateScreenHeight(30)),
-                buildPasswordFormField(cubit),
-                SizedBox(height: getProportionateScreenHeight(30)),
-                Row(
-                  children: [
-                    Checkbox(
-                      value: cubit.isPasswordVisible,
-                      activeColor: kPrimaryColor,
-                      onChanged: (value) {
-                        cubit.changePasswordVisibaltySignIn();
-                      },
+    return BlocConsumer<SignInCubit, SignInState>(
+      listener: (context, state) {
+
+        if(state is SignInLoadingState){
+          showCustomProgressIndicator(context);
+        }
+        else if(state is SignInFailuerState){
+          Navigator.pop(context);
+          String errorMsg = state.error;
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(errorMsg),
+            backgroundColor: Colors.black,
+            duration: Duration(seconds: 5),
+          ));
+        }
+        else if(state is SignInSuccessState){
+          Navigator.pop(context);
+          navigateToAndFinish(context,CompleteProfileScreen());
+        }
+      },
+      builder: (context, state) {
+        SignInCubit cubit = SignInCubit.get(context);
+        return Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              buildEmailFormField(cubit),
+              SizedBox(height: getProportionateScreenHeight(30)),
+              buildPasswordFormField(cubit),
+              SizedBox(height: getProportionateScreenHeight(30)),
+              Row(
+                children: [
+                  Checkbox(
+                    value: cubit.isPasswordVisible,
+                    activeColor: kPrimaryColor,
+                    onChanged: (value) {
+                      cubit.changePasswordVisibaltySignIn();
+                    },
+                  ),
+                  Text("Show Password"),
+                  Spacer(),
+                  GestureDetector(
+                    onTap: () {},
+                    child: Text(
+                      "Forgot Password",
+                      style: TextStyle(decoration: TextDecoration.underline),
                     ),
-                    Text("Show Password"),
-                    Spacer(),
-                    GestureDetector(
-                      onTap: () {},
-                      child: Text(
-                        "Forgot Password",
-                        style: TextStyle(decoration: TextDecoration.underline),
-                      ),
-                    )
-                  ],
-                ),
-                FormError(errors: cubit.errors),
-                SizedBox(height: getProportionateScreenHeight(20)),
-                CustomButton(
-                    text: 'Login In',
-                    press: () {
-                      if (_formKey.currentState!.validate()) {
-                        _formKey.currentState!.save();
-                        KeyboardUtil.hideKeyboard(context);
-                        cubit.signInWithEmailAndPassword(email: email!,
-                            password: password!,
-                           );
-                      }
-                    }),
-              ],
-            ),
-          );
-        },
-      ),
+                  )
+                ],
+              ),
+              FormError(errors: cubit.errors),
+              SizedBox(height: getProportionateScreenHeight(20)),
+              CustomButton(
+                  text: 'Login In',
+                  press: () {
+                    if (_formKey.currentState!.validate()) {
+                      _formKey.currentState!.save();
+                      KeyboardUtil.hideKeyboard(context);
+                      cubit.signInWithEmailAndPassword(email: email!,
+                          password: password!,
+                         );
+                    }
+                  }),
+            ],
+          ),
+        );
+      },
     );
   }
 

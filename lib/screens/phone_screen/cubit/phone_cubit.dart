@@ -1,15 +1,12 @@
 import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl_phone_field/intl_phone_field.dart';
-import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:user_store/screens/phone_screen/cubit/phone_state.dart';
+import '../../../models/token_model.dart';
 import '../../../shared/helper/constants.dart';
-import '../../../shared/services/local/cache_helper.dart';
-import '../../../shared/styles/colors.dart';
-import '../components/phone_body.dart';
+
 
 class PhoneCubit extends Cubit<PhoneState> {
 
@@ -59,11 +56,19 @@ class PhoneCubit extends Cubit<PhoneState> {
   Future<void> signIn(PhoneAuthCredential credential) async {
     try {
       await FirebaseAuth.instance.signInWithCredential(credential).then((value){
+        genrateToken(value.user!.uid);
         emit(PhoneOTPVerified());
       });
     } catch (error) {
       emit(ErrorOccurred(errorMsg: error.toString()));
     }
   }
-
+  void genrateToken(String uid) {
+    FirebaseMessaging.instance.getToken().then((token) {
+      TokenModel tokenModel = TokenModel(uid: uid, token: token, isAdmin: false);
+      FirebaseDatabase.instance.ref(TOKENS).child(uid).set(tokenModel.toMap());
+    });
+  }
 }
+
+

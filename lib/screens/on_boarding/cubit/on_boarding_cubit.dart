@@ -24,26 +24,4 @@ class OnBoardingCubit extends Cubit<OnBoardingStates> {
     emit(LastPageView());
   }
 
-  void checkNavigation() {
-    FirebaseAuth.instance.authStateChanges().listen((user) {
-      if (user == null) {
-        emit(GoToSignIn());
-      } else {
-        FirebaseDatabase.instance.ref(USERS).child(user.uid).get().then((value) {
-          setToken(user.uid);
-          if (value.exists) {
-            emit(GoToHome());
-          } else {
-            emit(GoToCompleteProfile());
-          }
-        });
-      }
-    });
-  }
-  void setToken(String uid) {
-    FirebaseMessaging.instance.getToken().then((token) {
-      TokenModel tokenModel = TokenModel(uid: uid, token: token, isAdmin: false);
-      FirebaseDatabase.instance.ref(TOKENS).child(uid).set(tokenModel.toMap());
-    });
-  }
 }

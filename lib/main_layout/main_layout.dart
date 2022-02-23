@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:user_store/main_layout/cubit/main_layout_cubit.dart';
 
+import '../shared/helper/size_config.dart';
 import 'cubit/main_layout_state.dart';
 
 class MainLayout extends StatelessWidget {

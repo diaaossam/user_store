@@ -19,10 +19,12 @@ const String kNamelNullError = "Please Enter your name";
 const String kPhoneNumberNullError = "Please Enter your phone number";
 const String kAddressNullError = "Please Enter your address";
 
+const String USER_UID = "Please Enter your address";
+
 
 
 //Local Database
-const String TableName = 'favourite';
+/*const String TableName = 'favourite';
 const String DB_Name = 'myDB.db';
 const String ID = 'id';
 const String TITLE = 'title';
@@ -32,4 +34,4 @@ const String COLOR = 'color';
 const String RATING = 'rating';
 const String PRICE = 'price';
 const String isFavourite = 'isFavourite';
-const String isPopular = 'isPopular';
+const String isPopular = 'isPopular';*/

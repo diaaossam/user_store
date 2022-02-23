@@ -11,6 +11,7 @@ import '../../../shared/helper/size_config.dart';
 import '../../../shared/styles/colors.dart';
 import '../../complete_profile/complete_profile_screen.dart';
 import '../../sign_in/sign_in_screen.dart';
+import '../on_boarding_screen.dart';
 
 // This is the best practice
 
@@ -92,8 +93,8 @@ class Body extends StatelessWidget {
                     Spacer(flex: 3),
                     CustomButton(text: 'Continue', press: (){
                       if (cubit.isLast) {
-                        //OnBoardingScreen.submit(context);
-                        cubit.checkNavigation();
+                        OnBoardingScreen.submit(context);
+                       // cubit.checkNavigation();
                       } else {
                         boardController.nextPage(
                             duration: const Duration(

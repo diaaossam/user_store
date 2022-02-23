@@ -4,15 +4,16 @@ import 'package:user_store/main_layout/main_layout.dart';
 import 'package:user_store/screens/complete_profile/complete_profile_screen.dart';
 import 'package:user_store/screens/on_boarding/cubit/on_boarding_cubit.dart';
 import 'package:user_store/screens/on_boarding/cubit/on_boarding_states.dart';
+import 'package:user_store/shared/styles/colors.dart';
+import '../../shared/helper/constants.dart';
 import '../../shared/helper/methods.dart';
-import '../../shared/helper/size_config.dart';
+import '../../shared/services/local/cache_helper.dart';
 import '../sign_in/sign_in_screen.dart';
 import 'components/body.dart';
 
 class OnBoardingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    SizeConfig().init(context);
     return BlocProvider(
         create: (context) => OnBoardingCubit(),
         child: BlocConsumer<OnBoardingCubit, OnBoardingStates>(
@@ -20,7 +21,7 @@ class OnBoardingScreen extends StatelessWidget {
             if (state is GoToSignIn) {
               navigateToAndFinish(context, SignInScreen());
             } else if (state is GoToHome) {
-             navigateToAndFinish(context, MainLayout());
+              navigateToAndFinish(context, MainLayout());
             } else if (state is GoToCompleteProfile) {
               navigateToAndFinish(context, CompleteProfileScreen());
             }
@@ -32,12 +33,17 @@ class OnBoardingScreen extends StatelessWidget {
                 actions: [
                   TextButton(
                     onPressed: () {
-                      OnBoardingCubit.get(context).checkNavigation();
+                      //OnBoardingCubit.get(context).checkNavigation();
+
+                      submit(context);
                     },
                     child: Padding(
                       padding: const EdgeInsetsDirectional.only(end: 20.0),
-                      child: Text(
+                      child: const Text(
                         'Skip',
+                        style: TextStyle(
+                          color: kPrimaryColor
+                        ),
                       ),
                     ),
                   ),
@@ -46,5 +52,12 @@ class OnBoardingScreen extends StatelessWidget {
             );
           },
         ));
+  }
+  static void submit(BuildContext context) {
+    CachedHelper.saveData(key: ON_BOARDING, value: true).then((value) {
+      if (value) {
+        navigateToAndFinish(context, SignInScreen());
+      }
+    });
   }
 }

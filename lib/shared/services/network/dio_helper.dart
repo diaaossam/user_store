@@ -18,6 +18,7 @@ class DioHelper {
     );
     _dio = Dio(baseOptions);
   }
+  
 
   Future<Response> getData(
       {required path, required Map<String, dynamic> map}) async {
